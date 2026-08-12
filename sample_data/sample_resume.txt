@@ -1,0 +1,29 @@
+Aditi Sharma
+aditi.sharma@email.com | +91 98765 43210 | Kanpur, India | linkedin.com/in/aditisharma
+
+SUMMARY
+Software engineer with 2 years of experience building backend services and
+data pipelines. Comfortable working across the stack from APIs to deployment.
+
+SKILLS
+Python, Java, SQL, Django, Flask, REST APIs, Docker, Git, PostgreSQL, AWS (EC2, S3)
+
+EXPERIENCE
+Backend Engineer — Nimbus Systems (Jun 2024 - Present)
+- Built and maintained REST APIs in Django serving 50k+ daily requests
+- Migrated a legacy monolith's billing module to a separate microservice, cutting deploy time by 40%
+- Wrote automated tests that raised backend test coverage from 35% to 78%
+- Set up CI/CD pipelines using GitHub Actions and Docker
+
+Software Engineering Intern — Vertex Labs (Jan 2023 - May 2023)
+- Built internal dashboards using Flask and PostgreSQL for the ops team
+- Automated a manual reporting process, saving the team ~6 hours/week
+- Collaborated with 3 engineers in an agile sprint-based workflow
+
+PROJECTS
+Expense Tracker API
+- Designed and built a REST API for tracking shared expenses among groups
+- Used PostgreSQL for storage and deployed on AWS EC2 with Docker
+
+EDUCATION
+B.Tech in Computer Science — IIT Kanpur (2020 - 2024)

@@ -1,0 +1,22 @@
+AI Engineer Intern — PW Central AI Team
+
+We're looking for an AI Engineer Intern to help us build and ship AI-powered
+products fast. You'll work directly with the product and engineering team to
+prototype agentic AI applications, integrate LLM APIs (Anthropic, OpenAI),
+and take features from idea to working demo in days, not months.
+
+Responsibilities:
+- Design and build AI product prototypes end-to-end: backend, prompt design, and UI
+- Integrate LLM APIs for tasks like content generation, summarization, and agents
+- Write clean, well-tested Python code and ship working software quickly
+- Work with data pipelines, scraping, and structured data extraction
+- Instrument products with analytics (PostHog or similar) to track usage
+- Collaborate closely with product managers to scope and prioritize features
+
+Requirements:
+- Strong Python fundamentals; experience with Flask, FastAPI, or Streamlit
+- Experience calling LLM APIs (Anthropic Claude, OpenAI GPT, or similar)
+- Understanding of prompt engineering and structured output generation
+- Familiarity with REST APIs, Docker, and basic cloud deployment (AWS/GCP)
+- Bonus: experience with agentic workflows, RAG, or web scraping
+- Ability to move fast, ship working prototypes, and iterate based on feedback
