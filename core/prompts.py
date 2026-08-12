@@ -5,6 +5,31 @@ Design principle: the model is only allowed to REPHRASE, REORDER, and
 RE-EMPHASIZE facts that already exist in the candidate's resume. It must
 never invent employers, titles, dates, or skills that are not present in
 the source resume. This keeps the output honest and ATS-safe.
+
+WHY THE NO-FABRICATION RULE IS NON-NEGOTIABLE FOR A RESUME TOOL
+================================================================
+Unlike a chatbot where a hallucination is merely annoying, a fabricated
+fact on a resume has *career-ending* consequences:
+
+  1. Background checks: Employers routinely verify titles, dates, and
+     degrees. A single mismatch flags the candidate as dishonest and
+     results in immediate disqualification or a rescinded offer.
+
+  2. Post-hire liability: If a fabricated credential is discovered after
+     hiring, the employee can be terminated for cause — even years later
+     — and may forfeit severance, references, and legal protections.
+
+  3. Professional licensing: In regulated fields (engineering, finance,
+     healthcare), a misrepresented credential can trigger license
+     revocation, fines, or legal action against the candidate.
+
+  4. Tool trust: A resume builder that invents facts is *worse than
+     useless* — users may not catch LLM hallucinations buried in dense
+     bullet points. The tool must be safe-by-default. We'd rather
+     under-optimize a resume than put a user's career at risk.
+
+This constraint is enforced in the system prompt below and should be
+treated as a hard product requirement, not a nice-to-have.
 """
 
 SYSTEM_PROMPT = """You are an expert technical resume writer and ATS \
