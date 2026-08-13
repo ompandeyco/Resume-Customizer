@@ -26,17 +26,27 @@ st.caption(
 
 with st.sidebar:
     st.header("Setup")
-    api_key = st.text_input(
-        "Anthropic API Key",
-        value=os.environ.get("ANTHROPIC_API_KEY", ""),
-        type="password",
-        help="Get one at console.anthropic.com. Stored only for this session.",
-    )
+    provider = st.selectbox("LLM Provider", ["Gemini", "Anthropic"])
+    
+    if provider == "Gemini":
+        api_key = st.text_input(
+            "Gemini API Key",
+            value=os.environ.get("GEMINI_API_KEY", ""),
+            type="password",
+            help="Get one from Google AI Studio. Stored only for this session.",
+        )
+    else:
+        api_key = st.text_input(
+            "Anthropic API Key",
+            value=os.environ.get("ANTHROPIC_API_KEY", ""),
+            type="password",
+            help="Get one at console.anthropic.com. Stored only for this session.",
+        )
     st.markdown("---")
     st.markdown(
         "**How it works**\n"
         "1. Parse your resume file into plain text\n"
-        "2. Claude rewrites/reorders it to match the JD (facts only — no fabrication)\n"
+        "2. The LLM rewrites/reorders it to match the JD (facts only — no fabrication)\n"
         "3. A keyword-overlap score shows before vs. after ATS match\n"
         "4. A polished PDF is generated for download"
     )
@@ -57,7 +67,7 @@ run = st.button("✨ Tailor My Resume", type="primary", use_container_width=True
 
 if run:
     if not api_key:
-        st.error("Please enter your Anthropic API key in the sidebar.")
+        st.error(f"Please enter your {provider} API key in the sidebar.")
         st.stop()
 
     # --- Load resume text ---
@@ -84,9 +94,9 @@ if run:
 
     before = keyword_match_score(resume_text, jd_text)
 
-    with st.spinner("Tailoring your resume with Claude..."):
+    with st.spinner(f"Tailoring your resume with {provider}..."):
         try:
-            tailored = tailor_resume(resume_text, jd_text, api_key=api_key)
+            tailored = tailor_resume(resume_text, jd_text, provider=provider, api_key=api_key)
         except Exception as e:
             st.error(f"Tailoring failed: {e}")
             st.stop()
