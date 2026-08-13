@@ -2,9 +2,23 @@
 Renders the tailored resume JSON into a clean, ATS-friendly, single-column
 PDF using reportlab. No external binaries (LibreOffice, wkhtmltopdf, etc.)
 required, which keeps this portable and fast.
+
+Schema expected (from core.prompts):
+{
+  "name": "string",
+  "title": "string",
+  "contact": {"email", "phone", "location", "linkedin"},
+  "summary": "string",
+  "skills": ["string", ...],
+  "experience": [{"company", "role", "dates", "location", "bullets": [...]}],
+  "projects": [{"name", "description", "bullets": [...]}],
+  "education": [{"school", "degree", "dates"}],
+  "keywords_emphasized": [...]          # ignored during rendering
+}
 """
 
 import io
+from xml.sax.saxutils import escape as _xml_escape
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
@@ -17,120 +31,209 @@ from reportlab.platypus import (
     ListItem,
     Paragraph,
     SimpleDocTemplate,
-    Spacer,
 )
 
-ACCENT = colors.HexColor("#1a2b4c")
-TEXT = colors.HexColor("#222222")
-MUTED = colors.HexColor("#555555")
+# ── colour palette ──────────────────────────────────────────────────────────
+NAVY   = colors.HexColor("#1B2A4A")   # headings, name, horizontal rule
+TEXT   = colors.HexColor("#222222")    # body text
+MUTED  = colors.HexColor("#555555")   # dates, meta, contact line
 
 
-def _styles():
+# ── style factory ───────────────────────────────────────────────────────────
+def _styles() -> dict[str, ParagraphStyle]:
+    """Build the full set of paragraph styles used in the resume."""
     base = getSampleStyleSheet()
-    styles = {
+    return {
         "name": ParagraphStyle(
-            "name", parent=base["Title"], alignment=TA_LEFT, fontSize=22,
-            textColor=ACCENT, spaceAfter=2, fontName="Helvetica-Bold",
+            "ResumeName",
+            parent=base["Title"],
+            alignment=TA_LEFT,
+            fontSize=22,
+            leading=26,
+            textColor=NAVY,
+            spaceAfter=2,
+            fontName="Helvetica-Bold",
         ),
         "title": ParagraphStyle(
-            "title", parent=base["Normal"], fontSize=12, textColor=MUTED,
-            spaceAfter=8, fontName="Helvetica-Oblique",
+            "ResumeTitle",
+            parent=base["Normal"],
+            fontSize=12,
+            leading=15,
+            textColor=MUTED,
+            spaceAfter=4,
+            fontName="Helvetica-Oblique",
         ),
         "contact": ParagraphStyle(
-            "contact", parent=base["Normal"], fontSize=9.5, textColor=MUTED,
-            spaceAfter=10,
+            "ResumeContact",
+            parent=base["Normal"],
+            fontSize=9.5,
+            leading=12,
+            textColor=MUTED,
+            spaceAfter=6,
         ),
         "section": ParagraphStyle(
-            "section", parent=base["Heading2"], fontSize=12, textColor=ACCENT,
-            spaceBefore=12, spaceAfter=4, fontName="Helvetica-Bold",
+            "SectionHeading",
+            parent=base["Heading2"],
+            fontSize=11.5,
+            leading=14,
+            textColor=NAVY,
+            spaceBefore=10,
+            spaceAfter=3,
+            fontName="Helvetica-Bold",
         ),
         "body": ParagraphStyle(
-            "body", parent=base["Normal"], fontSize=10, textColor=TEXT,
+            "BodyText",
+            parent=base["Normal"],
+            fontSize=10,
             leading=13,
+            textColor=TEXT,
         ),
         "bullet": ParagraphStyle(
-            "bullet", parent=base["Normal"], fontSize=10, textColor=TEXT,
+            "BulletText",
+            parent=base["Normal"],
+            fontSize=10,
             leading=13,
+            textColor=TEXT,
         ),
         "role": ParagraphStyle(
-            "role", parent=base["Normal"], fontSize=10.5, textColor=TEXT,
-            fontName="Helvetica-Bold", spaceBefore=6,
+            "RoleLine",
+            parent=base["Normal"],
+            fontSize=10.5,
+            leading=13,
+            textColor=TEXT,
+            fontName="Helvetica-Bold",
+            spaceBefore=6,
         ),
         "meta": ParagraphStyle(
-            "meta", parent=base["Normal"], fontSize=9, textColor=MUTED,
+            "MetaLine",
+            parent=base["Normal"],
+            fontSize=9,
+            leading=11,
+            textColor=MUTED,
+            spaceAfter=2,
+        ),
+        "proj_desc": ParagraphStyle(
+            "ProjectDescription",
+            parent=base["Normal"],
+            fontSize=9.5,
+            leading=12,
+            textColor=MUTED,
+            fontName="Helvetica-Oblique",
+            spaceAfter=1,
         ),
     }
-    return styles
 
 
+# ── public API ──────────────────────────────────────────────────────────────
 def build_resume_pdf(resume: dict) -> bytes:
+    """Take a structured resume dict and return the rendered PDF as bytes.
+
+    Sections are emitted in the order:
+        Name / Title / Contact → SUMMARY → SKILLS → EXPERIENCE →
+        PROJECTS → EDUCATION
+    Any section whose data is empty/missing is silently skipped.
+    """
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
-        buffer, pagesize=LETTER,
-        topMargin=0.55 * inch, bottomMargin=0.55 * inch,
-        leftMargin=0.65 * inch, rightMargin=0.65 * inch,
+        buffer,
+        pagesize=LETTER,
+        topMargin=0.55 * inch,
+        bottomMargin=0.55 * inch,
+        leftMargin=0.65 * inch,
+        rightMargin=0.65 * inch,
     )
     s = _styles()
-    story = []
+    story: list = []
 
-    contact = resume.get("contact", {}) or {}
-    contact_line = " | ".join(
-        v for v in [contact.get("email"), contact.get("phone"),
-                    contact.get("location"), contact.get("linkedin")] if v
-    )
+    # ── header block ────────────────────────────────────────────────────
+    story.append(Paragraph(_esc(resume.get("name", "")), s["name"]))
 
-    story.append(Paragraph(resume.get("name", ""), s["name"]))
     if resume.get("title"):
-        story.append(Paragraph(resume["title"], s["title"]))
-    if contact_line:
-        story.append(Paragraph(contact_line, s["contact"]))
-    story.append(HRFlowable(width="100%", color=ACCENT, thickness=1.2))
+        story.append(Paragraph(_esc(resume["title"]), s["title"]))
 
+    contact = resume.get("contact") or {}
+    contact_parts = [
+        contact.get("email"),
+        contact.get("phone"),
+        contact.get("location"),
+        contact.get("linkedin"),
+    ]
+    contact_line = "  |  ".join(p for p in contact_parts if p)
+    if contact_line:
+        story.append(Paragraph(_esc(contact_line), s["contact"]))
+
+    story.append(HRFlowable(width="100%", color=NAVY, thickness=1.2))
+
+    # ── SUMMARY ─────────────────────────────────────────────────────────
     if resume.get("summary"):
         story.append(Paragraph("SUMMARY", s["section"]))
-        story.append(Paragraph(resume["summary"], s["body"]))
+        story.append(Paragraph(_esc(resume["summary"]), s["body"]))
 
+    # ── SKILLS ──────────────────────────────────────────────────────────
     if resume.get("skills"):
         story.append(Paragraph("SKILLS", s["section"]))
-        story.append(Paragraph(" &nbsp;•&nbsp; ".join(resume["skills"]), s["body"]))
+        skills_text = " &nbsp;&bull;&nbsp; ".join(_esc(sk) for sk in resume["skills"])
+        story.append(Paragraph(skills_text, s["body"]))
 
+    # ── EXPERIENCE ──────────────────────────────────────────────────────
     if resume.get("experience"):
         story.append(Paragraph("EXPERIENCE", s["section"]))
         for job in resume["experience"]:
-            header = f"{job.get('role', '')} — {job.get('company', '')}"
-            meta = " | ".join(v for v in [job.get("dates"), job.get("location")] if v)
+            role    = _esc(job.get("role", ""))
+            company = _esc(job.get("company", ""))
+            header  = f"{role} \u2014 {company}" if company else role
             story.append(Paragraph(header, s["role"]))
+
+            meta_parts = [job.get("dates"), job.get("location")]
+            meta = "  |  ".join(_esc(p) for p in meta_parts if p)
             if meta:
                 story.append(Paragraph(meta, s["meta"]))
+
             bullets = job.get("bullets") or []
             if bullets:
                 story.append(_bullet_list(bullets, s["bullet"]))
 
+    # ── PROJECTS ────────────────────────────────────────────────────────
     if resume.get("projects"):
         story.append(Paragraph("PROJECTS", s["section"]))
         for proj in resume["projects"]:
-            story.append(Paragraph(proj.get("name", ""), s["role"]))
+            story.append(Paragraph(_esc(proj.get("name", "")), s["role"]))
             if proj.get("description"):
-                story.append(Paragraph(proj["description"], s["body"]))
+                story.append(Paragraph(_esc(proj["description"]), s["proj_desc"]))
             bullets = proj.get("bullets") or []
             if bullets:
                 story.append(_bullet_list(bullets, s["bullet"]))
 
+    # ── EDUCATION ───────────────────────────────────────────────────────
     if resume.get("education"):
         story.append(Paragraph("EDUCATION", s["section"]))
         for edu in resume["education"]:
-            line = f"{edu.get('degree', '')} — {edu.get('school', '')}"
+            degree = _esc(edu.get("degree", ""))
+            school = _esc(edu.get("school", ""))
+            line   = f"{degree} \u2014 {school}" if school else degree
             story.append(Paragraph(line, s["role"]))
             if edu.get("dates"):
-                story.append(Paragraph(edu["dates"], s["meta"]))
+                story.append(Paragraph(_esc(edu["dates"]), s["meta"]))
 
+    # ── render & return ─────────────────────────────────────────────────
     doc.build(story)
     buffer.seek(0)
     return buffer.read()
 
 
-def _bullet_list(items, style):
+# ── helpers ─────────────────────────────────────────────────────────────────
+def _esc(text: str) -> str:
+    """XML-escape user text so <, >, & don't break reportlab's Paragraph."""
+    return _xml_escape(text)
+
+
+def _bullet_list(items: list[str], style: ParagraphStyle) -> ListFlowable:
+    """Render a list of strings as a bulleted ReportLab ListFlowable."""
     return ListFlowable(
-        [ListItem(Paragraph(item, style), spaceAfter=2) for item in items],
-        bulletType="bullet", start="•", leftIndent=14,
+        [ListItem(Paragraph(_esc(item), style), spaceAfter=2) for item in items],
+        bulletType="bullet",
+        start="\u2022",       # bullet character •
+        leftIndent=14,
+        bulletFontSize=10,
+        bulletOffsetY=0,
     )
