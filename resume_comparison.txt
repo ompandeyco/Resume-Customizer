@@ -1,0 +1,274 @@
+================================================================================
+ORIGINAL TEXT:
+================================================================================
+OM PANDEY
+Mobile: +91-9335878761 | Email: omompandey7@gmail.com | LinkedIn
+Software Engineer | AI/ML Engineer | Quantitative Research Consultant
+PROFESSIONAL SUMMARY
+Software Engineer with hands-on experience across backend development, machine learning, and applied research. Skilled in
+building and deploying production-grade systems using Python, FastAPI, Node.js, and React.js, alongside strong foundations
+in Data Structures & Algorithms, OOP, and system design. Combines full-stack engineering ability with AI/ML expertise
+(RAG pipelines, LLMs, deep learning) to design end-to-end, scalable software solutions.
+EDUCATION
+Qualification B.Tech, Computer Science Engineering (AI/ML)
+University Lovely Professional University, Phagwara, Punjab
+CGPA 8.0 / 10
+ACHIEVEMENTS & RECOGNITIONS
+• Represented Punjab at the Viksit Bharat Young Leaders Dialogue (VBYLD) 2026.
+• Filed a patent application for an Adaptive Neuromodulation System (May 2025).
+• Solved 200+ Data Structures & Algorithms problems across LeetCode, CodeChef & GeeksforGeeks.
+DOMAIN, EMPLOYERS & SKILLS
+Domain Artificial Intelligence / Machine Learning, Quantitative Finance, Full Stack Development
+Employers / Platforms WorldQuant (BRAIN Platform), Apna College Platform
+Machine Learning, Deep Learning, PyTorch, TensorFlow, Scikit-learn, OpenCV, Hugging
+AI/ML & GenAI
+Face, Transformers, LLMs, RAG, Agentic AI, MLflow
+Programming Languages C++, Python, Java, JavaScript, SQL
+Backend & Web
+FastAPI, Django, Flask, Node.js, Express.js, React.js, REST APIs
+Development
+Databases MySQL, MongoDB
+Tools & Platforms Git, GitHub, Docker, Linux, AWS, Streamlit
+Core CS Data Structures & Algorithms, OOP, Operating Systems, Computer Networks
+EXPERIENCE & PROJECT SUMMARY
+Client / Platform Project / Role Duration
+WorldQuant (BRAIN Platform) Alpha Signal Research & Back-testing Feb 2026 – Present
+Apna College Platform AI/ML Teaching Assistant Intern Dec 2025 – May 2026
+Apna College Platform MERN Full Stack Teaching Assistant Intern Jul 2025 – Dec 2025
+Independent Project Sarkari Saathi – Govt. Scheme Finder (RAG) Live – May 2026
+Independent Project Xeno AI CRM Live – Jun 2026
+Independent Project Groundwater Quality Monitoring System Jan 2026
+1. Project Name: Alpha Signal Research & Back-testing
+Client Company Role / Designation
+Research Consultant, Quantitative Finance Feb
+WorldQuant WorldQuant (BRAIN Platform) – Remote
+2026 – Present
+Skills Used Statistical Modeling, Time-Series Analysis, Alpha Research, Python, SQL
+Description:
+WorldQuant's BRAIN platform is a crowd-sourced quantitative research platform where researchers design and back-test
+predictive trading signals (alphas) across global markets using large-scale historical datasets.
+Responsibilities:
+• Engineered and back-tested 50+ alpha signals across 10M+ data points using statistical modeling and time-series analysis
+techniques.
+• Applied systematic feature engineering and correlation analysis to refine signal quality and reduce redundancy across the
+alpha universe.
+• Improved average Sharpe ratio by ~30% through iterative signal optimization and risk-adjusted performance tuning.
+• Documented signal methodology and back-testing results for internal evaluation and platform submission.
+2. Project Name: AI/ML Teaching Assistant Internship
+Client Company Role / Designation
+AI/ML Teaching Assistant Intern Dec 2025 –
+Apna College Platform Apna College – Remote
+May 2026
+Skills Used Deep Learning, Computer Vision, Model Evaluation, Technical Content Review
+Description:
+Apna College is an ed-tech platform delivering large-scale, cohort-based courses in AI/ML and full-stack development to
+learners across India.
+Responsibilities:
+• Resolved 1,010+ student queries related to Deep Learning, Computer Vision, and model evaluation concepts.
+• Maintained an average learner satisfaction rating of 4.7/5.0 across a cohort of 5,000+ students.
+• Reviewed 50+ AI/ML video modules and supporting documents for technical accuracy.
+• Recommended content improvements that enhanced clarity and reduced recurring learner doubts.
+3. Project Name: MERN Full Stack Teaching Assistant Internship
+Client Company Role / Designation
+MERN Full Stack Teaching Assistant Intern Jul
+Apna College Platform Apna College – Remote
+2025 – Dec 2025
+Skills Used MongoDB, Express.js, React.js, Node.js, DSA, Debugging
+Description:
+Supported learners on the MERN stack and Data Structures & Algorithms track of Apna College's flagship placement-
+preparation program.
+Responsibilities:
+• Resolved 1,000+ MERN stack and DSA-related queries for 5,000+ learners through code reviews and live debugging
+sessions.
+• Conducted 1-on-1 walkthroughs to help learners debug assignments and understand core concepts.
+• Built reusable debugging frameworks that drove measurable improvement in assignment submission rates and scores.
+4. Project Name: Sarkari Saathi – AI-Powered Government Scheme Finder
+Client Company Role / Designation
+Software Engineer (AI/ML Developer) Live –
+Independent Project Personal / Live Deployment
+May 2026
+Python, FastAPI, Hugging Face Transformers, Sentence Transformers, RAG, LLMs,
+Skills Used
+ChromaDB
+Description:
+Sarkari Saathi is an AI-powered platform built to help India's underserved population discover relevant government schemes
+and earning opportunities in their own language.
+Responsibilities:
+• Built and evaluated a multilingual Retrieval-Augmented Generation (RAG) pipeline using ChromaDB and multilingual-
+e5-base embeddings.
+• Achieved over 80% retrieval accuracy across 1,000+ bilingual government documents.
+• Deployed the solution end-to-end on Vercel + Railway, cutting scheme discovery time from hours to under 2 minutes.
+• Designed the system to target India's 500M+ underserved users seeking access to government welfare schemes.
+5. Project Name: Xeno AI CRM – AI-Native Customer Relationship Platform
+Client Company Role / Designation
+Software Engineer (Full Stack & AI Developer)
+Independent Project Personal / Live Deployment
+Live – Jun 2026
+Skills Used React.js, Node.js, Express.js, MongoDB Atlas, Gemini AI, Render, Vercel
+Description:
+Xeno AI CRM is an AI-native customer relationship management platform that combines conversational AI with customer
+analytics for businesses.
+Responsibilities:
+• Integrated Gemini-powered LLM workflows for intelligent customer segmentation, campaign generation, and
+conversational insights.
+• Designed a microservice architecture separating the CRM backend from an async channel service, deployed on Render.
+• Built an analytics dashboard using MongoDB aggregations over 1,000+ customers and 5,000+ order records.
+6. Project Name: Groundwater Quality Monitoring System
+Client Company Role / Designation
+Software Engineer (Machine Learning
+Independent Project Personal / Academic
+Developer) Jan 2026
+Skills Used Python, Scikit-learn, PyTorch, FastAPI, Pandas, NumPy
+Description:
+A machine learning-based system built to classify groundwater quality samples against BIS and WHO drinking water
+standards.
+Responsibilities:
+• Built an ML pipeline using PCA, anomaly detection, and Water Quality Index (WQI) modeling for 3-class sample
+classification.
+• Mapped classification outputs to BIS & WHO standards for interpretability.
+• Developed a FastAPI backend to evaluate water samples, reducing manual classification time by 60%.
+CERTIFICATIONS
+• Oracle Data Platform 2025 Certified Foundations Associate – Oracle University (May 2026)
+• Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate – Oracle University (Feb 2026)
+PERSONAL DETAILS
+Father's Name Mr. Shyam Pandey
+Date of Birth 6th July, 2006
+Nationality Indian
+Permanent Address Azamgarh, Uttar Pradesh
+Languages Known English, Hindi
+Marital Status Single
+Hobbies Playing Chess
+Date: Signature
+Om Pandey
+Place:
+
+================================================================================
+TAILORED JSON OUTPUT:
+================================================================================
+{
+  "name": "OM PANDEY",
+  "title": "AI Engineer Intern",
+  "contact": {
+    "email": "omompandey7@gmail.com",
+    "phone": "+91-9335878761",
+    "location": "Azamgarh, Uttar Pradesh",
+    "linkedin": ""
+  },
+  "summary": "Software Engineer and AI/ML Developer with hands-on experience designing, prototyping, and deploying end-to-end AI applications, RAG pipelines, and full-stack systems. Proven ability to write clean, efficient Python code and build production-ready backends using FastAPI, Flask, and Streamlit. Adept at shipping high-impact software solutions quickly and iterating based on real-world requirements.",
+  "skills": [
+    "Python",
+    "FastAPI",
+    "Flask",
+    "Streamlit",
+    "LLMs",
+    "RAG",
+    "Agentic AI",
+    "Hugging Face",
+    "Transformers",
+    "Docker",
+    "AWS",
+    "REST APIs",
+    "React.js",
+    "Node.js",
+    "Express.js",
+    "MongoDB",
+    "MySQL",
+    "C++",
+    "Java",
+    "JavaScript",
+    "SQL",
+    "Deep Learning",
+    "PyTorch",
+    "TensorFlow",
+    "Scikit-learn",
+    "OpenCV",
+    "MLflow",
+    "Django",
+    "Git",
+    "GitHub",
+    "Linux",
+    "Data Structures & Algorithms",
+    "OOP"
+  ],
+  "experience": [
+    {
+      "company": "WorldQuant (BRAIN Platform)",
+      "role": "Research Consultant, Quantitative Finance",
+      "dates": "Feb 2026 \u2013 Present",
+      "location": "Remote",
+      "bullets": [
+        "Engineered and back-tested 50+ alpha signals across 10M+ data points using Python and statistical time-series analysis.",
+        "Applied systematic feature engineering and correlation analysis to optimize predictive signal quality.",
+        "Improved average Sharpe ratio by ~30% through iterative signal optimization and risk-adjusted performance tuning."
+      ]
+    },
+    {
+      "company": "Apna College Platform",
+      "role": "AI/ML Teaching Assistant Intern",
+      "dates": "Dec 2025 \u2013 May 2026",
+      "location": "Remote",
+      "bullets": [
+        "Resolved 1,010+ learner queries related to Deep Learning, Computer Vision, and model evaluation concepts.",
+        "Maintained an average learner satisfaction rating of 4.7/5.0 across a cohort of 5,000+ students.",
+        "Reviewed 50+ AI/ML video modules and supporting technical documents to ensure conceptual accuracy."
+      ]
+    },
+    {
+      "company": "Apna College Platform",
+      "role": "MERN Full Stack Teaching Assistant Intern",
+      "dates": "Jul 2025 \u2013 Dec 2025",
+      "location": "Remote",
+      "bullets": [
+        "Resolved 1,000+ MERN stack and DSA queries through technical code reviews and live debugging sessions.",
+        "Built reusable debugging frameworks that drove measurable improvement in assignment completion rates."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "school": "Lovely Professional University, Phagwara, Punjab",
+      "degree": "B.Tech, Computer Science Engineering (AI/ML) (CGPA: 8.0 / 10)",
+      "dates": ""
+    }
+  ],
+  "projects": [
+    {
+      "name": "Sarkari Saathi \u2013 AI-Powered Government Scheme Finder",
+      "description": "An AI-powered platform built to help India's underserved population discover relevant government schemes in their own language.",
+      "bullets": [
+        "Built and evaluated a multilingual Retrieval-Augmented Generation (RAG) pipeline using ChromaDB and multilingual-e5-base embeddings.",
+        "Achieved over 80% retrieval accuracy across 1,000+ bilingual documents.",
+        "Developed and deployed the FastAPI backend end-to-end on Vercel + Railway, cutting discovery times to under 2 minutes."
+      ]
+    },
+    {
+      "name": "Xeno AI CRM \u2013 AI-Native Customer Relationship Platform",
+      "description": "An AI-native CRM platform combining conversational AI workflows with business analytics.",
+      "bullets": [
+        "Integrated Gemini-powered LLM workflows for intelligent customer segmentation and conversational insights.",
+        "Designed and implemented a microservice architecture separating the main backend from an async channel service.",
+        "Built a responsive analytics dashboard using MongoDB aggregations over 1,000+ customers and 5,000+ order records."
+      ]
+    },
+    {
+      "name": "Groundwater Quality Monitoring System",
+      "description": "A machine learning-based backend system built to classify groundwater quality samples against BIS and WHO drinking water standards.",
+      "bullets": [
+        "Developed a FastAPI backend to evaluate water samples, reducing manual classification time by 60%.",
+        "Built an ML pipeline using PCA, anomaly detection, and Water Quality Index (WQI) modeling."
+      ]
+    }
+  ],
+  "keywords_emphasized": [
+    "Python",
+    "FastAPI",
+    "Flask",
+    "Streamlit",
+    "LLMs",
+    "RAG",
+    "Agentic AI",
+    "Docker",
+    "AWS",
+    "REST APIs"
+  ]
+}
