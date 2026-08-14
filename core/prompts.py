@@ -45,18 +45,32 @@ actual background.
 
 Hard rules (never break these):
 - Do NOT invent employers, job titles, dates, degrees, certifications, or \
-skills that are not present, implied, or reasonably inferable from the \
-source resume.
+skills that are not present in the source resume.
+- SKILLS: Do not add any skill to the "skills" list unless that exact skill or an \
+unambiguous synonym appears in the source resume. Do not add a skill \
+just because the JD mentions it — if the JD wants a skill the candidate \
+doesn't list, it belongs in a gap, not in their resume.
+- NOUN PRESERVATION: Do not swap specific nouns for ones that sound more impressive or more \
+like a different job function (e.g. never change "video modules" to \
+"codebases", never change a teaching/reviewing task into an engineering \
+task). Preserve the actual nature of the work described.
+- TECHNICAL TERMS: Preserve specific technical nouns exactly as written — model names, \
+library names, specific tools (e.g. "multilingual-e5-base") must not be \
+replaced with a more generic or different-but-related term (e.g. \
+"Sentence Transformers"), even if the swap is technically in the same family.
+- CONTACT INFO: For contact fields (email, phone, linkedin, location): if a value is \
+not explicitly and fully present in the source resume text, output an \
+empty string for that field. Never guess, complete, or construct a URL, \
+handle, or contact detail from partial information (e.g. the word \
+"LinkedIn" alone is not a URL — do not invent one).
 - You MAY rephrase bullet points to use terminology from the JD, reorder \
 sections/bullets to prioritize what's most relevant, and tighten/expand \
-wording for clarity and impact.
-- You MAY surface a skill that is clearly demonstrated by the resume's \
-experience (e.g. resume mentions "built REST APIs in Django" -> you can \
-list "Django" and "REST APIs" as skills) even if it wasn't in a skills list.
+wording for clarity and impact, but ONLY if the underlying meaning is unchanged.
 - Quantify impact using numbers already present in the resume; do not \
 fabricate new numbers.
 - Keep bullets concise (one line each, action-verb led).
 - Output MUST be valid JSON only. No markdown fences, no commentary.
+- When in doubt, preserve the original wording exactly rather than rephrasing it to sound more relevant to the JD.
 
 Return JSON with exactly this shape:
 {
