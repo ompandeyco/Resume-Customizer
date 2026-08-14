@@ -1,63 +1,104 @@
 # JD-to-Resume Customizer
 
-Upload a resume and paste a job description → get back a **tailored, ATS-optimized resume as a finished, downloadable PDF**. Not a chat reply, not a Gem — a working product.
+An AI-powered application that takes your existing resume and a target job description (JD), and automatically tailors your resume to match the JD's requirements. 
 
-## Why this approach
+## Why is this different from a ChatGPT prompt?
 
-Most "AI resume tools" are a thin prompt wrapper: paste JD, paste resume, get back prose advice you then have to manually apply. That's not a product, it's a chat session. This tool instead:
+Most people use ChatGPT to tailor their resumes by pasting their history and the JD into a chat window. This approach has three major flaws that this tool solves:
 
-1. **Parses** the uploaded resume file directly (PDF/DOCX/TXT → plain text)
-2. **Tailors** it with an LLM constrained to a strict JSON schema and a hard rule: *rephrase, reorder, and re-emphasize truthfully — never fabricate* employers, titles, dates, or skills that aren't in the source resume
-3. **Scores** ATS keyword match before vs. after, using a fast deterministic heuristic (not another LLM call) — so the "value add" is something concrete and measurable, not just a vibe
-4. **Renders** the tailored content into a clean, single-column, ATS-safe PDF using `reportlab` — no LibreOffice/wkhtmltopdf dependency, so it's portable and fast
+1. **Finished, ATS-Friendly PDF Output:** Chatbots spit out markdown text. You then have to spend 30 minutes copying, pasting, and reformatting that text into a Word doc or PDF. This app bypasses the chat entirely and generates a cleanly formatted, single-column, ATS-readable PDF ready for immediate download.
+2. **Strict Anti-Fabrication Guardrails:** Standard LLMs will often hallucinate skills you don't have just because the JD asked for them. This tool uses structured output generation and a strict system prompt to ensure it *only* reorders, emphasizes, and rephrases your *actual* historical experience. It will not invent experience.
+3. **Objective ATS Keyword Scoring:** How do you know the AI actually improved your resume? This app runs a deterministic heuristic (keyword matching and bigram analysis) to show you a concrete "Before" and "After" overlap score, proving the tailoring was effective.
 
-## Architecture
+## Pipeline Architecture
 
+The application runs locally via a Streamlit frontend and calls the Google Gemini API for the tailoring step.
+
+```text
+  [PDF/Word/TXT]        [Text Paste]
+   User Resume       Job Description (JD)
+        │                    │
+        ▼                    ▼
+ ┌───────────────────────────────────────┐
+ │ 1. PARSE                              │
+ │ Extracts raw text from the resume     │
+ │ document using pdfplumber / docx.     │
+ └───────────────────┬───────────────────┘
+                     │
+                     ▼
+ ┌───────────────────────────────────────┐
+ │ 2. TAILOR (Gemini API)                │
+ │ Structured LLM call to generate JSON  │
+ │ matching the schema of a resume while │
+ │ adhering to anti-fabrication rules.   │
+ └───────────────────┬───────────────────┘
+                     │
+                     ▼
+ ┌───────────────────────────────────────┐
+ │ 3. SCORE                              │
+ │ Extracts technical bigrams & keywords │
+ │ from the JD (minus filler) and scores │
+ │ the raw vs. tailored resume.          │
+ └───────────────────┬───────────────────┘
+                     │
+                     ▼
+ ┌───────────────────────────────────────┐
+ │ 4. RENDER                             │
+ │ Converts the tailored JSON into a     │
+ │ clean, ATS-compliant PDF via reportlab│
+ └───────────────────────────────────────┘
+                     │
+                     ▼
+             [Download PDF]
 ```
-┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐     ┌────────────────┐
-│  Upload:    │────▶│ resume_parser.py │────▶│   tailor.py      │────▶│  pdf_builder.py │
-│  resume +   │     │ (pdfplumber /    │     │ (Claude API,     │     │  (reportlab →   │
-│  JD text    │     │  python-docx)    │     │  strict JSON     │     │   finished PDF) │
-│             │     │                  │     │  schema)         │     │                 │
-└─────────────┘     └──────────────────┘     └─────────────────┘     └────────────────┘
-                                                       │
-                                                       ▼
-                                            keyword_match_score()
-                                            (before/after ATS metric,
-                                             pure Python, no LLM call)
-```
 
-- **`app.py`** — Streamlit UI: upload, JD input, run, preview, download
-- **`core/resume_parser.py`** — file → plain text (PDF via `pdfplumber`, DOCX via `python-docx`)
-- **`core/prompts.py`** — the system prompt enforcing the "no fabrication" schema
-- **`core/tailor.py`** — calls the Claude API; also has `keyword_match_score()`, a cheap non-LLM heuristic for a before/after match percentage
-- **`core/pdf_builder.py`** — structured JSON → polished PDF via `reportlab`
+## Local Setup Instructions
 
-## Running it locally
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd jd-resume-customizer
+   ```
 
-```bash
-git clone <your-repo-url>
-cd jd-resume-customizer
-pip install -r requirements.txt
+2. **Install dependencies**
+   Ensure you have Python 3.10+ installed.
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-cp .env.example .env
-# edit .env and add your ANTHROPIC_API_KEY
+3. **Configure Environment Variables**
+   Copy the example environment file and add your Gemini API key:
+   ```bash
+   cp .env.example .env
+   ```
+   Open `.env` and paste your Google Gemini API key:
+   ```env
+   GEMINI_API_KEY=your_actual_key_here
+   ```
 
-streamlit run app.py
-```
+4. **Run the Application**
+   ```bash
+   streamlit run app.py
+   ```
+   The app will open in your browser at `http://localhost:8501`.
 
-Then open the local URL Streamlit prints (usually `http://localhost:8501`). You can also enter your API key directly in the sidebar instead of using `.env`.
+## Deployment (Streamlit Community Cloud)
 
-There are sample resume/JD files under `sample_data/` so you can demo it with one click, no uploads needed.
+You can easily host this for free on Streamlit Community Cloud:
 
-## Deploying a live demo
+1. Push this repository to a public or private GitHub repository.
+2. Go to [share.streamlit.io](https://share.streamlit.io/) and log in with GitHub.
+3. Click **New app**.
+4. Select your repository, branch, and set the main file path to `app.py`.
+5. **CRITICAL:** Before clicking Deploy, click on **Advanced settings** and add your `GEMINI_API_KEY` to the Secrets section:
+   ```toml
+   GEMINI_API_KEY = "your_actual_key_here"
+   ```
+6. Click **Deploy**. Your app will be live with a public URL in a few minutes.
 
-Easiest path: [Streamlit Community Cloud](https://streamlit.io/cloud) — connect this GitHub repo, set `ANTHROPIC_API_KEY` as a secret, deploy. Free, and gives you a public demo link for the submission form.
+## Known Limitations & Future Work
 
-## Known limitations / what I'd do next with more time
-
-- Resume parsing is text-only — doesn't preserve the original's visual layout intent (by design: the LLM re-derives structure). Complex multi-column resume PDFs can extract text out of order.
-- No persistence/auth — it's a single-session tool. Adding user accounts + a history of tailored versions would be a natural next step.
-- The keyword-match score is a simple overlap heuristic, not true ATS parsing behavior — good enough as a directional signal, but a v2 could use embedding similarity for semantic (not just literal) match.
-- Currently one PDF template/design. Next: 2-3 selectable templates.
-- Would add a "diff view" showing exactly which bullets/lines changed vs. the original, for full transparency.
+* **Hardcoded Styling:** The PDF builder (`reportlab`) currently produces a single hardcoded layout. It looks clean and professional, but future iterations should support uploading a LaTeX template or selecting from multiple design themes.
+* **Context Window Limits:** Extremely long resumes or JDs might bump into context limits, though Gemini Flash handles most standard sizes with ease.
+* **Token/Rate Limits:** The free tier of the Gemini API has strict rate limits (RPM). If multiple people use the hosted demo simultaneously, they may experience API rate-limiting errors.
+* **More Sophisticated Scoring:** The current ATS keyword score relies on bigrams and stop-word filtering. A more advanced version could use semantic embeddings (e.g., intelligently matching "AWS" to "Amazon Web Services" or "GCP" to "Cloud Deployment").
