@@ -8,9 +8,14 @@ Run locally:
     streamlit run app.py
 """
 
+import logging
 import os
 
 import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 from core.pdf_builder import build_resume_pdf
 from core.resume_parser import extract_text
@@ -26,23 +31,6 @@ st.caption(
 
 with st.sidebar:
     st.header("Setup")
-    provider = st.selectbox("LLM Provider", ["Gemini", "Anthropic"])
-    
-    if provider == "Gemini":
-        api_key = st.text_input(
-            "Gemini API Key",
-            value=os.environ.get("GEMINI_API_KEY", ""),
-            type="password",
-            help="Get one from Google AI Studio. Stored only for this session.",
-        )
-    else:
-        api_key = st.text_input(
-            "Anthropic API Key",
-            value=os.environ.get("ANTHROPIC_API_KEY", ""),
-            type="password",
-            help="Get one at console.anthropic.com. Stored only for this session.",
-        )
-    st.markdown("---")
     st.markdown(
         "**How it works**\n"
         "1. Parse your resume file into plain text\n"
@@ -56,7 +44,8 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("1. Your resume")
     resume_file = st.file_uploader("Upload resume (.pdf, .docx, .txt)", type=["pdf", "docx", "txt"])
-    use_sample_resume = st.checkbox("Use sample resume instead", value=not resume_file)
+    resume_text_input = st.text_area("Or paste your resume text here", height=150)
+    use_sample_resume = st.checkbox("Use sample resume instead", value=not (resume_file or resume_text_input))
 
 with col2:
     st.subheader("2. Target job description")
@@ -66,17 +55,24 @@ with col2:
 run = st.button("✨ Tailor My Resume", type="primary", use_container_width=True)
 
 if run:
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        st.error(f"Please enter your {provider} API key in the sidebar.")
+        st.error("Please set GEMINI_API_KEY in your .env file.")
         st.stop()
 
     # --- Load resume text ---
-    if use_sample_resume or not resume_file:
+    if use_sample_resume or (not resume_file and not resume_text_input.strip()):
         with open("sample_data/sample_resume.txt", "r") as f:
             resume_text = f.read()
+    elif resume_text_input.strip():
+        resume_text = resume_text_input
+        logging.info(f"Text pasted: length {len(resume_text)} | First 200 chars: {repr(resume_text[:200])}")
     else:
         try:
-            resume_text = extract_text(resume_file.read(), resume_file.name)
+            file_bytes = resume_file.read()
+            logging.info(f"File upload: {resume_file.name} | Byte size: {len(file_bytes)}")
+            resume_text = extract_text(file_bytes, resume_file.name)
+            logging.info(f"Extracted text length: {len(resume_text)} | First 200 chars: {repr(resume_text[:200])}")
         except Exception as e:
             st.error(f"Couldn't read resume file: {e}")
             st.stop()
@@ -94,20 +90,36 @@ if run:
 
     before = keyword_match_score(resume_text, jd_text)
 
-    with st.spinner(f"Tailoring your resume with {provider}..."):
+    logging.info(f"Preparing to call API. Resume text length: {len(resume_text)}, JD text length: {len(jd_text)}")
+    with st.spinner("Tailoring your resume with Gemini..."):
         try:
-            tailored = tailor_resume(resume_text, jd_text, provider=provider, api_key=api_key)
+            tailored = tailor_resume(resume_text, jd_text, provider="gemini", api_key=api_key)
         except Exception as e:
             st.error(f"Tailoring failed: {e}")
             st.stop()
 
-    tailored_flat_text = " ".join([
+    # Build flat text from ALL tailored content for accurate scoring.
+    # The old code only included summary + skills + experience bullets,
+    # which dropped projects, education, title, and role/company names —
+    # causing the "after" score to look artificially lower.
+    flat_parts = [
+        tailored.get("name", ""),
+        tailored.get("title", ""),
         tailored.get("summary", ""),
         " ".join(tailored.get("skills", [])),
-        " ".join(
-            b for job in tailored.get("experience", []) for b in job.get("bullets", [])
-        ),
-    ])
+    ]
+    for job in tailored.get("experience", []):
+        flat_parts.append(job.get("role", ""))
+        flat_parts.append(job.get("company", ""))
+        flat_parts.extend(job.get("bullets", []))
+    for proj in tailored.get("projects", []):
+        flat_parts.append(proj.get("name", ""))
+        flat_parts.append(proj.get("description", ""))
+        flat_parts.extend(proj.get("bullets", []))
+    for edu in tailored.get("education", []):
+        flat_parts.append(edu.get("school", ""))
+        flat_parts.append(edu.get("degree", ""))
+    tailored_flat_text = " ".join(flat_parts)
     after = keyword_match_score(tailored_flat_text, jd_text)
 
     st.success("Done! Here's the before/after ATS keyword match:")
